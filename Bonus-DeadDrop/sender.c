@@ -6,8 +6,8 @@
 #include <math.h> 
 
 // [Bonus] TODO: define your own buffer size
-#define BUFF_SIZE (1<<21)
-//#define BUFF_SIZE 256*1024*2
+//#define BUFF_SIZE (1<<21)
+#define BUFF_SIZE 256*1024
 
 int extract_numerical_value(const char *char_array) {
     int length = strlen(char_array);
@@ -70,6 +70,9 @@ int main(int argc, char **argv)
     printf("Please type a message.\n");
 	char text_buf[128];
         fgets(text_buf, sizeof(text_buf), stdin);
+        set_no = extract_numerical_value(text_buf);
+
+	
     bool sending = true;
     while (sending) {
         //char text_buf[128];
@@ -84,15 +87,19 @@ int main(int argc, char **argv)
        		set_no = set_no + binary[i]*(pow(2,i)); //map the 8 bit number from one of set 0 to 255 
        }
 */
-	set_no = extract_numerical_value(text_buf);	
+	//set_no = extract_numerical_value(text_buf);	
 	//printf("\n%d\n",set_no);
-       for (int i = 0; i<4; i++){ // filling all 4 ways of that set
+        for (int i = 0; i<4; i++){ // filling all 4 ways of that set
 	       for (int j = 0; j<4; j++) {
-		eviction_buffer[((set_no+256*j)*64) + 1024*64*i] = 1; // since there are 1024 sets in L2, fill total 4 sets that correspond to set no. or set_no + multiple of 256
+		eviction_buffer[((set_no+256*i)*64) + 1024*64*j] = 1; // since there are 1024 sets in L2, fill total 4 lines of  4 sets each that correspond to set no. or set_no + multiple of 256
        }
        }
 
-
+	    /*
+	    for (int i =0; i< 4; i++) {
+		eviction_buffer[(set_no*64) + 1024*64*i]; 
+	    }
+*/
 
        /* one_bit = strcmp(text_buf, "0\n");
 	if(one_bit == 0){
